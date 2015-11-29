@@ -16,10 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import to.kit.name.FamilyNameConverterMain;
-import to.kit.name.MeargeMain;
 import to.kit.personal.dto.KenAll;
 
+/**
+ * 住所系ユーティリティー.
+ * @author Hidetaka Sasai
+ */
 public final class AddressUtils {
 	/** Logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(AddressUtils.class);
@@ -29,10 +31,14 @@ public final class AddressUtils {
 		// nop
 	}
 
+	/**
+	 * 住所を読み込む.
+	 * @return 住所リスト
+	 */
 	public static List<String> loadAll() {
 		List<String> list;
 
-		try (InputStream in = FamilyNameConverterMain.class.getResourceAsStream(ZIP);
+		try (InputStream in = AddressUtils.class.getResourceAsStream(ZIP);
 				ArchiveInputStream ai = new ArchiveStreamFactory().createArchiveInputStream(in)) {
 			ArchiveEntry entry = ai.getNextEntry();
 
