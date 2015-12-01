@@ -20,6 +20,7 @@ import to.kit.personal.dto.KanjiName;
 import to.kit.personal.dto.KenAll;
 import to.kit.personal.making.AddressMaker;
 import to.kit.personal.making.KanjiKanaMaker;
+import to.kit.personal.making.MyNumberMaker;
 import to.kit.personal.making.NumberMaker;
 import to.kit.personal.making.StringChooser;
 import to.kit.personal.making.TelMaker;
@@ -34,7 +35,7 @@ public class PersonalInfoGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(PersonalInfoGenerator.class);
 	private static final String SEI = "/familyName.txt";
 	private static final String MEI = "/firstName.txt";
-	private static final String[] HEADER = new String[] { "A", "B", "C", "D", "E", };
+	private static final String[] HEADER = { "A", "B", "C", "D", "E", };
 	private static final String SEQ2 = "00";
 	private static final int BRANCH = 1;
 	private static final String CONTRACT_INDEX = "00";
@@ -43,8 +44,7 @@ public class PersonalInfoGenerator {
 	private static final int REQ = 100000;
 
 	private final NumberMaker custNum = new NumberMaker(100000000, 999999999);
-	private final StringChooser office = new StringChooser("7510", "7270", "6830", "5079", "8514");
-	private final NumberMaker unitIndex = new NumberMaker(10000000, 99999999);
+	private final MyNumberMaker myNum = new MyNumberMaker();
 	private final StringChooser appType = new StringChooser("1A", "1B");
 	private final StringChooser bizType = new StringChooser("1", "2", "3", "4", "5", "6", "7", "9");
 	private final KanjiKanaMaker fnm = new KanjiKanaMaker(SEI, s -> NameUtils.toHalfKana(s));
@@ -61,6 +61,7 @@ public class PersonalInfoGenerator {
 
 	private List<String> choose() {
 		List<String> list = new ArrayList<>();
+		String myNumber = String.format("%012d", this.myNum.next());
 		KanjiName sei = this.fnm.next();
 		KanjiName mei = this.gnm.next();
 		String nameKanji = sei.getKanji() + '　' + mei.getKanji();
@@ -71,8 +72,8 @@ public class PersonalInfoGenerator {
 
 		list.add(this.custNum.next().toString());
 		list.add(SEQ2);
-		list.add(this.office.next());
-		list.add(this.unitIndex.next().toString());
+		list.add(myNumber.substring(0, 4));
+		list.add(myNumber.substring(4));
 		list.add(String.valueOf(BRANCH));
 		list.add(CONTRACT_INDEX);
 		list.add(CONTRACT_TYPE);
