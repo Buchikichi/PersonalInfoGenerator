@@ -5,7 +5,8 @@ import java.util.Arrays;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.validator.routines.checkdigit.CheckDigit;
 import org.apache.commons.validator.routines.checkdigit.CheckDigitException;
-import org.apache.commons.validator.routines.checkdigit.EAN13CheckDigit;
+
+import to.kit.personal.util.MyNumberCheckDigit;
 
 /**
  * マイナンバー(12桁)を生成.
@@ -14,7 +15,7 @@ import org.apache.commons.validator.routines.checkdigit.EAN13CheckDigit;
 public final class MyNumberMaker implements InfoMaker<Long> {
 	private static final int RETRY = 10;
 	private final NumberMaker nm = new NumberMaker(1, 9999);
-	private final CheckDigit ean13 = EAN13CheckDigit.EAN13_CHECK_DIGIT;
+	private final CheckDigit myNum = MyNumberCheckDigit.MY_NUMBER_CHECK_DIGIT;
 	private Long chose;
 
 	private int rack(long ... excludes) {
@@ -39,10 +40,11 @@ public final class MyNumberMaker implements InfoMaker<Long> {
 		long mid = rack(hi);
 		long lo = rack(hi, mid);
 		long result = (hi * 100000000L + mid * 10000 + lo) / 10;
+		String code = String.format("%011d", Long.valueOf(result));
 		int cd = 0;
 
 		try {
-			cd = NumberUtils.toInt(this.ean13.calculate(String.valueOf(result)));
+			cd = NumberUtils.toInt(this.myNum.calculate(code));
 		} catch (CheckDigitException e) {
 			e.printStackTrace();
 		}
