@@ -15,18 +15,16 @@ public final class MyNumberCheckDigit implements CheckDigit, Serializable {
     @Override
 	public String calculate(final String code) {
 		int val = 0;
-		int n = 1;
+		int ix = 1;
 
 		for (char c : code.toCharArray()) {
 			int p = c - '0';
-			int q = 7 - n % 6;
+			int q = 7 - ix % 6;
 
 			val += p * q;
-			n++;
+			ix++;
 		}
-		val %= 11;
-		val = 1 < val ? 11 - val : 0;
-		return String.valueOf(val);
+		return String.valueOf((11 - val % 11) % 11 % 10);
 	}
 
 	@Override
