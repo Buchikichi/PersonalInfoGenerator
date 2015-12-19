@@ -1,5 +1,6 @@
 package to.kit.personal.making;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -23,7 +24,7 @@ public final class AddressMaker implements InfoMaker<KenAll> {
 	private ApartmentChooser apart = new ApartmentChooser();
 
 	@Override
-	public KenAll next(String... conditions) {
+	public KenAll next() {
 		int ix = (int) (Math.random() * this.max);
 		KenAll rec = this.zipList.get(ix);
 		String city = rec.getCity();
@@ -62,10 +63,25 @@ public final class AddressMaker implements InfoMaker<KenAll> {
 
 	/**
 	 * インスタンス生成.
-	 * @param predicator Predicate
+	 * @param codes 都道府県コード
 	 */
-	public AddressMaker(final Predicate<KenAll> predicator) {
+	public AddressMaker(final String ... codes) {
+		List<String> list = Arrays.asList(codes);
+		Predicate<KenAll> predicator;
+
+		if (list.isEmpty()) {
+			predicator = null;
+		} else {
+			predicator = rec -> list.contains(rec.getX0401());
+		}
 		this.zipList = AddressUtils.load(predicator);
 		this.max = this.zipList.size();
+	}
+
+	/**
+	 * インスタンス生成.
+	 */
+	public AddressMaker() {
+		this(new String[] {});
 	}
 }

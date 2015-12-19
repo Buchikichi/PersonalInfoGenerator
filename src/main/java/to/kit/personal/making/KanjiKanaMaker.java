@@ -8,10 +8,12 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import to.kit.personal.dto.KanjiName;
+import to.kit.personal.util.NameUtils;
 
 /**
  * 漢字・カナの組み合わせを生成.
@@ -20,6 +22,7 @@ import to.kit.personal.dto.KanjiName;
 public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 	/** Logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KanjiKanaMaker.class);
+	private static final UnaryOperator<String> HALF_CONVERTER = s -> NameUtils.toHalfKana(s);
 	private final UnaryOperator<String> kanaConverter;
 
 	private List<String> loadAll(String resourceName) {
@@ -35,19 +38,7 @@ public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 	}
 
 	@Override
-	protected List<KanjiName> load(String... resources) {
-		List<KanjiName> list = new ArrayList<>();
-
-		for (String line : loadAll(resources[0])) {
-			String[] csv = line.split(",");
-
-			list.add(new KanjiName(csv[1], csv[0]));
-		}
-		return list;
-	}
-
-	@Override
-	public KanjiName next(String... conditions) {
+	public KanjiName next() {
 		int rank = (int) (Math.random() * getMax());
 		int ix = (int) (Math.random() * rank);
 		KanjiName result = getCandidateList().get(ix);
@@ -61,20 +52,42 @@ public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 		return result;
 	}
 
+	@Override
+	protected List<KanjiName> load(String... resources) {
+		List<KanjiName> list = new ArrayList<>();
+
+		for (String line : loadAll(resources[0])) {
+			String[] csv = line.split(",");
+
+			list.add(new KanjiName(csv[1], csv[0]));
+		}
+		return list;
+	}
+
 	/**
 	 * インスタンス生成.
 	 * @param resourceName 読み込むリソース名
 	 * @param converter 「かな」のコンバーター
 	 */
-	public KanjiKanaMaker(String resourceName, UnaryOperator<String> converter) {
+	public KanjiKanaMaker(final String resourceName, final String converter) {
 		super(resourceName);
-		this.kanaConverter = converter;
+		if (StringUtils.isNotBlank(converter)) {
+			String conv = converter.toLowerCase();
+
+			if (conv.startsWith("half")) {
+				this.kanaConverter = HALF_CONVERTER;
+			} else {
+				this.kanaConverter = null;
+			}
+		} else {
+			this.kanaConverter = null;
+		}
 	}
 	/**
 	 * インスタンス生成.
 	 * @param resourceName 読み込むリソース名
 	 */
-	public KanjiKanaMaker(String resourceName) {
+	public KanjiKanaMaker(final String resourceName) {
 		this(resourceName, null);
 	}
 }

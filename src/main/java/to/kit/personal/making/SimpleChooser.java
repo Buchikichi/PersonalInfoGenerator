@@ -33,7 +33,7 @@ public abstract class SimpleChooser<T> implements InfoMaker<T> {
 	}
 
 	@Override
-	public T next(String... conditions) {
+	public T next() {
 		int ix = rand(this.max);
 
 		this.chose = this.candidateList.get(ix);

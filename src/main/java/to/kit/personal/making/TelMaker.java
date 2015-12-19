@@ -25,38 +25,18 @@ public final class TelMaker extends SimpleChooser<String> {
 	private Map<String, String> map;
 	private NumberMaker number = new NumberMaker(0, 9999);
 
-	@Override
-	protected List<String> load(String... resources) {
-		List<String> list = new ArrayList<>();
-
-		this.map = new HashMap<>();
-		try (InputStream in = ListChooser.class.getResourceAsStream(resources[0])) {
-			for (String line : IOUtils.readLines(in, Charset.defaultCharset())) {
-				String[] csv = line.split(",");
-				String zip = csv[0];
-				String tel = '0' + csv[1];
-
-				this.map.put(zip, tel);
-				if (!list.contains(tel)) {
-					list.add(tel);
-				}
-			}
-		} catch (IOException e) {
-			LOG.error(e.getMessage());
-		}
-		return list;
-	}
-
-	@Override
-	public String next(String... conditions) {
+	/**
+	 * 郵便番号に依存した電話番号を生成.
+	 * @param zip7 郵便番号
+	 * @return 電話番号
+	 */
+	public String next(final String zip7) {
 		String tel;
 
 		if (1 < Math.random() * 5) {
 			String hi;
 
-			if (0 < conditions.length) {
-				String zip7 = conditions[0];
-
+			if (StringUtils.isNotBlank(zip7)) {
 				hi = this.map.get(zip7);
 			} else {
 				hi = super.next();
@@ -88,6 +68,33 @@ public final class TelMaker extends SimpleChooser<String> {
 		}
 		setChose(tel);
 		return tel;
+	}
+
+	@Override
+	public String next() {
+		return next(null);
+	}
+
+	@Override
+	protected List<String> load(String... resources) {
+		List<String> list = new ArrayList<>();
+
+		this.map = new HashMap<>();
+		try (InputStream in = ListChooser.class.getResourceAsStream(resources[0])) {
+			for (String line : IOUtils.readLines(in, Charset.defaultCharset())) {
+				String[] csv = line.split(",");
+				String zip = csv[0];
+				String tel = '0' + csv[1];
+
+				this.map.put(zip, tel);
+				if (!list.contains(tel)) {
+					list.add(tel);
+				}
+			}
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+		}
+		return list;
 	}
 
 	/**

@@ -10,7 +10,7 @@ public final class NumberMaker implements InfoMaker<Integer> {
 	private Integer chose;
 
 	@Override
-	public Integer next(String... conditions) {
+	public Integer next() {
 		int value = this.min + (int) (Math.random() * this.range);
 
 		this.chose = Integer.valueOf(value);
