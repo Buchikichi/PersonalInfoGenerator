@@ -7,7 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +38,7 @@ import to.kit.personal.making.InfoMaker;
 public class PersonalInfoGenerator {
 	/** Logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(PersonalInfoGenerator.class);
+	private static final Format DATE_FORMATTER = new SimpleDateFormat("yyyyMMdd");
 
 	private List<String> choose(Preference pref, Map<String, InfoMaker<?>> generatorMap) {
 		List<String> list = new ArrayList<>();
@@ -108,7 +112,9 @@ public class PersonalInfoGenerator {
 		Preference pref = loadPreference(file);
 		Map<String, InfoMaker<?>> generatorMap = getGeneratorMap(pref);
 		CSVFormat csvFormat = CSVFormat.EXCEL.withHeader(pref.getHeader());
-		File csv = new File("personalInfo.csv");
+		Date now = new Date();
+		String yyyymmdd = DATE_FORMATTER.format(now);
+		File csv = new File(yyyymmdd + "_personalInfo.csv");
 
 		LOG.debug("write");
 		try (FileOutputStream stream = new FileOutputStream(csv);
