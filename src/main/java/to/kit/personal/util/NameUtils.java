@@ -72,7 +72,7 @@ public class NameUtils {
 			UnicodeBlock block = UnicodeBlock.of(c);
 
 			if (UnicodeBlock.KATAKANA.equals(block)) {
-				int diff = 'ァ' - c;
+				int diff = c - 'ァ';
 				char hira = (char) ('ぁ' + diff);
 
 				buff.append(hira);
@@ -91,6 +91,30 @@ public class NameUtils {
 			}
 		}
 		return buff.reverse().toString();
+	}
+
+	/**
+	 * カタカナに変換.<br/>
+	 * 全角ひらがなを全角カタカナに変換
+	 * @param str 文字列
+	 * @return 変換後の文字列
+	 */
+	public static String toKatakana(final String str) {
+		StringBuilder buff = new StringBuilder();
+		char[] chars = str.toCharArray();
+		for (final char c : chars) {
+			UnicodeBlock block = UnicodeBlock.of(c);
+
+			if (UnicodeBlock.HIRAGANA.equals(block)) {
+				int diff = c - 'ぁ';
+				char hira = (char) ('ァ' + diff);
+
+				buff.append(hira);
+			} else {
+				buff.append(c);
+			}
+		}
+		return buff.toString();
 	}
 
 	public static String toHalfKana(final String str) {
