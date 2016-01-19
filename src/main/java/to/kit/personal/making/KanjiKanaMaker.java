@@ -23,6 +23,7 @@ public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 	/** Logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(KanjiKanaMaker.class);
 	private static final UnaryOperator<String> HALF_CONVERTER = s -> NameUtils.toHalfKana(s);
+	private static final UnaryOperator<String> KATAKANA_CONVERTER = s -> NameUtils.toKatakana(s);
 	private final UnaryOperator<String> kanaConverter;
 
 	private List<String> loadAll(String resourceName) {
@@ -58,8 +59,10 @@ public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 
 		for (String line : loadAll(resources[0])) {
 			String[] csv = line.split(",");
+			String kanji = NameUtils.shuffle(csv[1]);
+			String kana = NameUtils.shuffle(csv[0]);
 
-			list.add(new KanjiName(csv[1], csv[0]));
+			list.add(new KanjiName(kanji, kana));
 		}
 		return list;
 	}
@@ -76,6 +79,8 @@ public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 
 			if (conv.startsWith("half")) {
 				this.kanaConverter = HALF_CONVERTER;
+			} else if (conv.startsWith("katakana")) {
+				this.kanaConverter = KATAKANA_CONVERTER;
 			} else {
 				this.kanaConverter = null;
 			}

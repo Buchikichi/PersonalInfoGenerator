@@ -1,12 +1,19 @@
 package to.kit.personal.util;
 
 import java.lang.Character.UnicodeBlock;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.UnaryOperator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class NameUtils {
+/**
+ * 名前に関するユーティリティークラス.
+ * @author Hidetaka Sasai
+ */
+public final class NameUtils {
 	private static final String HALF_KANA = "ｧ ｱ ｨ ｲ ｩ ｳ ｪ ｴ ｫ ｵ ｶ ｶﾞｷ ｷﾞｸ ｸﾞｹ ｹﾞｺ ｺﾞｻ ｻﾞｼ ｼﾞｽ ｽﾞｾ ｾﾞｿ ｿﾞﾀ ﾀﾞﾁ ﾁﾞｯ ﾂ ﾂﾞﾃ ﾃﾞﾄ ﾄﾞﾅ ﾆ ﾇ ﾈ ﾉ ﾊ ﾊﾞﾊﾟﾋ ﾋﾞﾋﾟﾌ ﾌﾞﾌﾟﾍ ﾍﾞﾍﾟﾎ ﾎﾞﾎﾟﾏ ﾐ ﾑ ﾒ ﾓ ｬ ﾔ ｭ ﾕ ｮ ﾖ ﾗ ﾘ ﾙ ﾚ ﾛ * ﾜ ｲ ｴ ｦ ﾝ ｳﾞ";
 	private static final String SUUJI = "〇一二三四五六七八九";
 
@@ -19,10 +26,29 @@ public class NameUtils {
 		return ch;
 	};
 
+	private static String getHalfKana(final char c) {
+		int kanaIndex = c - 'ぁ';
+		int ix = kanaIndex < 96 ? kanaIndex : kanaIndex - 96;
+
+		ix *= 2;
+		if (0 <= ix && ix < HALF_KANA.length()) {
+			return HALF_KANA.substring(ix, ix + 2).trim();
+		}
+		if (kanaIndex == 187 || kanaIndex == 53021) {
+			return "ｰ";
+		}
+		return "*" + kanaIndex + "*";
+	}
+
 	private NameUtils() {
 		// nop
 	}
 
+	/**
+	 * 全角に変換.
+	 * @param str 文字列
+	 * @return 変換後の文字列
+	 */
 	public static String toFull(final String str) {
 		StringBuilder buff = new StringBuilder();
 
@@ -123,34 +149,27 @@ public class NameUtils {
 		for (final char c : str.toCharArray()) {
 			UnicodeBlock block = UnicodeBlock.of(c);
 
-			if (UnicodeBlock.KATAKANA.equals(block)) {
-				int ix = (c - 'ァ') * 2;
-
-				if (0 <= ix && ix < HALF_KANA.length()) {
-					String kana = HALF_KANA.substring(ix, ix + 2);
-
-					buff.append(kana.trim());
-				} else if (c == 'ー') {
-					buff.append('ｰ');
-				} else {
-					buff.append("***");
-				}
-			} else if (UnicodeBlock.HIRAGANA.equals(block)) {
-				int ix = (c - 'ぁ') * 2;
-
-				if (0 <= ix && ix < HALF_KANA.length()) {
-					String kana = HALF_KANA.substring(ix, ix + 2);
-
-					buff.append(kana.trim());
-				} else if (c == 'ー') {
-					buff.append('ｰ');
-				} else {
-					buff.append("*" + c + "*");
-				}
+			if (UnicodeBlock.HIRAGANA.equals(block)
+					|| UnicodeBlock.KATAKANA.equals(block)
+					|| c == '～') {
+				buff.append(getHalfKana(c));
 			} else {
 				buff.append(c);
 			}
 		}
 		return buff.toString();
+	}
+
+	/**
+	 * 文字列をシャッフル.
+	 * @param str 文字列
+	 * @return シャッフル後の文字列
+	 */
+	public static String shuffle(final String str) {
+		Character[] chars = ArrayUtils.toObject(str.toCharArray());
+		List<Character> list = Arrays.asList(chars);
+
+		Collections.shuffle(list);
+		return StringUtils.join(list, "");
 	}
 }

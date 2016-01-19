@@ -40,11 +40,9 @@ public class PersonalInfoGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(PersonalInfoGenerator.class);
 	private static final Format DATE_FORMATTER = new SimpleDateFormat("yyyyMMdd");
 
-	private List<String> choose(Preference pref, Map<String, InfoMaker<?>> generatorMap) {
+	private List<String> choose(Preference pref, Map<String, Object> valueMap) {
 		List<String> list = new ArrayList<>();
-		Map<String, Object> valueMap = new HashMap<>();
 
-		valueMap.putAll(generatorMap);
 		for (OutputInfo outputInfo : pref.getOutputs()) {
 			if (outputInfo == null) {
 				continue;
@@ -115,13 +113,15 @@ public class PersonalInfoGenerator {
 		Date now = new Date();
 		String yyyymmdd = DATE_FORMATTER.format(now);
 		File csv = new File(yyyymmdd + "_personalInfo.csv");
+		Map<String, Object> valueMap = new HashMap<>();
 
+		valueMap.putAll(generatorMap);
 		LOG.debug("write");
 		try (FileOutputStream stream = new FileOutputStream(csv);
 				Writer out = new OutputStreamWriter(stream, pref.getCharset());
 				CSVPrinter printer = csvFormat.print(out)) {
 			for (int ix = 0; ix < pref.getRequests(); ix++) {
-				List<String> line = choose(pref, generatorMap);
+				List<String> line = choose(pref, valueMap);
 
 				printer.printRecord(line);
 			}
