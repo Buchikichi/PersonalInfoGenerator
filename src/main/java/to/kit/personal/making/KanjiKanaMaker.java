@@ -59,8 +59,8 @@ public final class KanjiKanaMaker extends SimpleChooser<KanjiName> {
 
 		for (String line : loadAll(resources[0])) {
 			String[] csv = line.split(",");
-			String kanji = NameUtils.shuffle(csv[1]);
-			String kana = NameUtils.shuffle(csv[0]);
+			String kanji = csv[1]; //NameUtils.shuffle(csv[1]);
+			String kana = csv[0]; //NameUtils.shuffle(csv[0]);
 
 			list.add(new KanjiName(kanji, kana));
 		}

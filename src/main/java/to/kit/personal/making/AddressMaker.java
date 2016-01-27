@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import to.kit.personal.dto.KenAll;
+import to.kit.personal.dto.KenAll.Street;
 import to.kit.personal.util.AddressUtils;
 import to.kit.personal.util.NameUtils;
 
@@ -28,8 +29,9 @@ public final class AddressMaker implements InfoMaker<KenAll> {
 		int ix = (int) (Math.random() * this.max);
 		KenAll rec = this.zipList.get(ix);
 		String city = rec.getCity();
-		String street = String.valueOf(this.hi.next());
+		Street street = rec.getStreet();
 
+		street.setHi(NameUtils.toFull(String.valueOf(this.hi.next())));
 		if (rec.isHasChome() && !city.contains(CHOME)) {
 			String num = String.valueOf(this.chome.next());
 			String chomeStr = NameUtils.toKansuuji(num) + CHOME;
@@ -38,11 +40,8 @@ public final class AddressMaker implements InfoMaker<KenAll> {
 			rec.setCity(city);
 		}
 		if (0 < (int) (Math.random() * 5)) {
-			street += '-';
-			street += String.valueOf(this.lo.next());
+			street.setLo(NameUtils.toFull(String.valueOf(this.lo.next())));
 		}
-		street = NameUtils.toFull(street);
-		rec.setStreet(street);
 		if ((int) (Math.random() * 8) == 0) {
 			String apartment = this.apart.next(city, rec.getCityKana());
 			int floor = this.chome.next().intValue() * 100;

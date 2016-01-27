@@ -19,7 +19,7 @@ public class KenAll {
 	private boolean hasNumber;
 	private boolean hasChome;
 	// ext
-	private String street;
+	private final Street street = new Street();
 	private String apartment = StringUtils.EMPTY;
 	private String room = StringUtils.EMPTY;
 
@@ -101,11 +101,8 @@ public class KenAll {
 	public void setHasChome(boolean hasChome) {
 		this.hasChome = hasChome;
 	}
-	public String getStreet() {
+	public Street getStreet() {
 		return this.street;
-	}
-	public void setStreet(String street) {
-		this.street = street;
 	}
 	public String getApartment() {
 		return this.apartment;
@@ -118,5 +115,38 @@ public class KenAll {
 	}
 	public void setRoom(String room) {
 		this.room = room;
+	}
+
+	/**
+	 * 番地・番号.
+	 * @author Hidetaka Sasai
+	 */
+	public class Street {
+		private String hi;
+		private String lo = "";
+
+		public String getHi() {
+			return this.hi;
+		}
+		public void setHi(String hi) {
+			this.hi = hi;
+		}
+		public String getLo() {
+			return this.lo;
+		}
+		public void setLo(String lo) {
+			this.lo = lo;
+		}
+
+		@Override
+		public String toString() {
+			StringBuilder buff = new StringBuilder();
+			buff.append(this.hi);
+			if (this.lo != null && !this.lo.isEmpty()) {
+				buff.append('－');
+				buff.append(this.lo);
+			}
+			return buff.toString();
+		}
 	}
 }
