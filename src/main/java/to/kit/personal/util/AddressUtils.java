@@ -1,5 +1,6 @@
 package to.kit.personal.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -31,14 +32,27 @@ public final class AddressUtils {
 		// nop
 	}
 
+	private static byte[] loadZip() {
+		byte[] bytes;
+
+		try (InputStream in = AddressUtils.class.getResourceAsStream(ZIP)) {
+			bytes = IOUtils.toByteArray(in);
+		} catch (IOException e) {
+			LOG.debug(e.getMessage());
+			bytes = new byte[] {};
+		}
+		return bytes;
+	}
+
 	/**
 	 * 住所を読み込む.
 	 * @return 住所リスト
 	 */
 	public static List<String> loadAll() {
 		List<String> list;
+		byte[] zip = loadZip();
 
-		try (InputStream in = AddressUtils.class.getResourceAsStream(ZIP);
+		try (InputStream in = new ByteArrayInputStream(zip);
 				ArchiveInputStream ai = new ArchiveStreamFactory().createArchiveInputStream(in)) {
 			ArchiveEntry entry = ai.getNextEntry();
 

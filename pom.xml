@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>to.kit.db</groupId>
   <artifactId>name</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.18.5</version>
   <name>FamilyName</name>
   <description>FamilyName</description>
   <properties>
@@ -28,7 +28,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
-      <version>1.10</version>
+      <version>1.16.1</version>
     </dependency>
     <dependency>
       <groupId>commons-validator</groupId>
@@ -58,8 +58,30 @@
   </dependencies>
 
   <build>
-    <finalName>ScenarioEditor</finalName>
+    <finalName>PersonalInfo</finalName>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <finalName>PersonalInfo-${project.version}</finalName>
+          <appendAssemblyId>false</appendAssemblyId>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>to.kit.personal.PersonalInfoGenerator</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>single</goal></goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

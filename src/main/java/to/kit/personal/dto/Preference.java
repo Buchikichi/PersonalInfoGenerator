@@ -4,6 +4,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.arnx.jsonic.JSONHint;
+
 /**
  * 出力設定.
  * @author Hidetaka Sasai
@@ -85,6 +87,7 @@ public final class Preference {
 	/**
 	 * @param requests the requests to set
 	 */
+	@JSONHint(format = "#,###")
 	public void setRequests(int requests) {
 		this.requests = requests;
 	}
